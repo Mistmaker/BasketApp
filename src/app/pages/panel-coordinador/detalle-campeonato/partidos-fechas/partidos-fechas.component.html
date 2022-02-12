@@ -1,0 +1,11 @@
+<div class="container p-0">
+    <app-eliminatoria *ngIf="modalidad == 'Eliminatoria directa'" [modalidad]="modalidad"></app-eliminatoria>
+    <app-eliminatoria-ida-vuelta *ngIf="modalidad == 'Eliminatoria ida y vuelta'" [modalidad]="modalidad">
+    </app-eliminatoria-ida-vuelta>
+    <app-grupos *ngIf="modalidad == 'Grupos'"></app-grupos>
+    <app-liga-ida *ngIf="modalidad == 'Liga encuentros de ida'" [modalidad]="modalidad"></app-liga-ida>
+    <app-liga-ida-vuelta *ngIf="modalidad == 'Liga encuentros de ida vuelta'" [modalidad]="modalidad"></app-liga-ida-vuelta>
+</div>
+
+
+<app-spinner></app-spinner>

@@ -1,0 +1,69 @@
+.seguidores {
+    background-color: rgb(201, 202, 201);
+    padding: 10px;
+}
+
+.edit-ico {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background-color: white;
+    padding-left: 4px;
+}
+
+.edit-ico :hover {
+    background-color: rgb(224, 223, 223);
+}
+
+.box {
+    width: 100%;
+    height: 135px;
+    background: #ccc;
+    overflow: hidden;
+    position: relative;
+}
+
+.box img {
+    width: 100%;
+    height: auto;
+}
+
+@supports (object-fit: cover) {
+    .box img {
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+    }
+}
+
+.subir-image {
+    margin-top: 3px;
+    padding: 5px 10px;
+    color: #fff;
+    border: 0px solid #fff;
+    border: solid gray 2px;
+    border-style: dashed;
+    width: 100%;
+    height: auto;
+}
+
+.delete-image {
+    position: absolute;
+    top: 1px;
+    right: 14px;
+    background-color: rgba(201, 198, 198, 0.877);
+    padding-left: 4px;
+    padding-right: 5px;
+    color: red;
+}
+
+#file-upload-imagen1 {
+    display: none;
+  }
+
+.background-base {
+    background-color: #ee6730;
+}
+.color-base {
+    color: #ee6730;
+}

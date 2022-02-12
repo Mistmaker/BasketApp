@@ -1,0 +1,451 @@
+<div class="card">
+    <div class="card-header text-white background-base">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2">
+                    <button class="btn btn-primary btn-sm" (click)="irHaEquipos()">
+                        <i class="fas fa-arrow-left"></i> Atrás
+                    </button>
+                </div>
+                <div class="col-lg-8">
+                    <div class="text-center">
+                        <h5>Jugadores de {{nombreEquipo}}</h5>
+                    </div>
+
+                </div>
+                <div class="col-lg-2 text-end " *ngIf="!ingresoRapido">
+                    <button class="btn btn-primary btn-sm w-100" data-bs-toggle="modal"
+                        data-bs-target="#modalAddJugadores">
+                        <i class="fas fa-plus"></i> Agregar Jugador
+                    </button>
+                </div>
+                <div class="col-lg-2 text-end " *ngIf="ingresoRapido">
+                    <button class="btn btn-primary btn-sm w-100" data-bs-toggle="modal"
+                        data-bs-target="#modalIngresoRapido">
+                        <i class="fas fa-plus"></i> Agregar Jugador
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <input type="text" class="form-control" placeholder="Buscar jugador" [(ngModel)]="filtro">
+
+        <hr class="mb-0">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Nombres</th>
+                    <th scope="col">Cédula</th>
+                    <th scope="col">Correo</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let x of jugadores |filter: filtro">
+                    <td>
+                        <img [src]="x.imgMostrar" class="image-jugador">
+                    </td>
+                    <td>{{x.nombres}}</td>
+                    <td>{{x.cedula}}</td>
+                    <td>{{x.correo}}</td>
+                    <td>
+                        <button class="btn btn-outline-primary btn-sm ms-3" (click)="editarJugador(x._id)"
+                            data-bs-toggle="modal" data-bs-target="#modalEditarJugadores" *ngIf="!ingresoRapido">
+                            <i class="far fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm ms-3" (click)="editarJugador(x._id)"
+                            data-bs-toggle="modal" data-bs-target="#modalEditarRapido" *ngIf="ingresoRapido">
+                            <i class="far fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm ms-3" (click)="quitarJugador(x.correo,x._id)">
+                            <i class="far fa-trash-alt"></i> Quitar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal add, all Jugadores -->
+<div class="modal fade" id="modalAddJugadores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-users"></i> Agregar Jugador
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="con-btn-upload" (click)="UploadFileCreate()">
+                                <label for="file-upload-imagen1" class="subir-image">
+                                    <div *ngIf="!img1">
+                                        <img src="assets/imagenes/image-icono.png" class="w-100">
+                                    </div>
+                                    <div *ngIf="img1" class="text-center">
+                                        <img [src]="imageSrc1" style="height: auto; width: 75%;">
+                                    </div>
+                                </label>
+                                <!--input id="file-upload-imagen1" class="upload" type="file" #imagen1 accept="image/*"
+                                    (change)="seleccionarImagen1($event)" -->
+                            </div>
+                        </div>
+                        <div class="col-lg-8 ">
+                            <form #formJugadorCreate="ngForm" id="formJugadorCreate">
+                                <label>Nombres</label>
+                                <input type="text" class="form-control" name="nombres" #nombres="ngModel"
+                                    [(ngModel)]="jugadorCreate.nombres" required>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>Cédula</label>
+                                        <input type="text" pattern="[0-9]+" maxlength="12" minlength="9"
+                                            class="form-control" name="cedu" #cedu="ngModel"
+                                            [(ngModel)]="jugadorCreate.cedula" (change)="verificarCedula()" required>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Email</label>
+                                        <input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                            class="form-control" name="email" #email="ngModel"
+                                            [(ngModel)]="jugadorCreate.correo" required>
+                                        <div class="errInput mt-1 rounded" *ngIf="correoExiste">
+                                            Este email ya se encuentra registrado!
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="msj-error mt-2 p-2 rounded"
+                                    *ngIf="cedulaExiste == 'existe-en-este-campeonato'">
+                                    Este jugador ya se encuentra registrado para este campeonato!!
+                                </div>
+                                <div class="msj-agregar mt-2 p-2 rounded"
+                                    *ngIf="cedulaExiste == 'existe-en-otro-campeonato'">
+                                    <div class="row">
+                                        <div class="col-lg-7">
+                                            <label class="text-agregar"> El jugador con cédula {{jugadorCreate.cedula}}
+                                                ya se encuentra registrado en el sistema</label>
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <button class="btn btn-primary btn-sm w-100"
+                                                (click)="agregarJugadorANuevoCampeonato()">
+                                                <i class="fas fa-plus"></i> Agregar a este equipo
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>Whatsapp</label>
+                                        <input type="text" class="form-control" name="ws" #ws="ngModel" pattern="[0-9]+"
+                                            minlength="9" maxlength="12" [(ngModel)]="jugadorCreate.whatsapp" required>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Teléfono</label>
+                                        <input type="text" class="form-control" name="tel" #tel="ngModel"
+                                            pattern="[0-9]+" minlength="5" maxlength="12"
+                                            [(ngModel)]="jugadorCreate.telefono" required>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>Fecha nacimiento</label>
+                                        <input type="date" class="form-control" name="fecha" #fecha="ngModel"
+                                            [(ngModel)]="jugadorCreate.fecha_nacimiento" required>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Alias</label>
+                                        <input type="text" class="form-control" name="alias" #alias="ngModel"
+                                            [(ngModel)]="jugadorCreate.alias">
+                                        <div class="msj-error p-2 mt-1 rounded" *ngIf="alias.touched && alias.invalid">
+                                            Ingrese un alias
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>Provincia</label>
+                                        <select class="form-select" name="provincia" [(ngModel)]="provinciaone"
+                                            (change)="getCiudades($event)">
+                                            <option style="display:none"></option>
+                                            <option *ngFor="let x of provincias" [value]="x.codigo_prov">
+                                                {{x.nombre_prov}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Ciudad</label>
+                                        <select class="form-select" name="ciudad" #ciudad="ngModel"
+                                            [(ngModel)]="jugadorCreate.ciudad" required>
+                                            <option style="display:none"></option>
+                                            <option *ngFor="let x of ciudades" [value]="x.nombre_ciu">
+                                                {{x.nombre_ciu}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary"
+                    [disabled]="formJugadorCreate.invalid || cedulaExiste == 'existe-en-este-campeonato'"
+                    (click)="verificarCorreo()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal editar jugador -->
+<div class="modal fade" id="modalEditarJugadores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-users"></i> Editar Jugador
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="con-btn-upload" (click)="UploadFileUpdate()">
+                                <label for="file-upload-imagen1" class="subir-image">
+                                    <div *ngIf="!img2">
+                                        <img src="assets/imagenes/image-icono.png" class="w-100">
+                                    </div>
+                                    <div *ngIf="img2" class="text-center">
+                                        <img [src]="imageSrc2" style="height: auto; width: 75%;">
+                                    </div>
+                                </label>
+                                <!--input id="file-upload-imagen1" class="upload" type="file" #imagen1 accept="image/*"
+                                    (change)="seleccionarImagen1($event)" -->
+                            </div>
+                        </div>
+                        <div class="col-lg-8 ">
+                            <form #formJugadorEditar="ngForm" id="formJugadorEditar">
+                                <label>Nombres</label>
+                                <input type="text" class="form-control" name="nombres" #nombres="ngModel"
+                                    [(ngModel)]="jugadorEditar.nombres" required>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>Cédula</label>
+                                        <input type="text" pattern="[0-9]+" maxlength="12" minlength="9"
+                                            class="form-control" name="cedu" #cedu="ngModel"
+                                            [(ngModel)]="jugadorEditar.cedula" (change)="verificarCedula()" required>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Email</label>
+                                        <input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                            class="form-control" name="email" #email="ngModel"
+                                            [(ngModel)]="jugadorEditar.correo" disabled>
+                                        <div class="errInput mt-1 rounded" *ngIf="correoExiste">
+                                            Este email ya se encuentra registrado!
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="msj-error mt-2 p-2 rounded"
+                                    *ngIf="cedulaExiste == 'existe-en-este-campeonato'">
+                                    Este jugador ya se encuentra registrado para este campeonato!!
+                                </div>
+                                <div class="msj-agregar mt-2 p-2 rounded"
+                                    *ngIf="cedulaExiste == 'existe-en-otro-campeonato'">
+                                    <div class="row">
+                                        <div class="col-lg-7">
+                                            <label class="text-agregar"> El jugador con cédula {{jugadorEditar.cedula}}
+                                                ya se encuentra registrado en el sistema</label>
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <button class="btn btn-primary btn-sm w-100"
+                                                (click)="agregarJugadorANuevoCampeonato()">
+                                                <i class="fas fa-plus"></i> Agregar a este equipo
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>Whatsapp</label>
+                                        <input type="text" class="form-control" name="ws" #ws="ngModel" pattern="[0-9]+"
+                                            minlength="9" maxlength="12" [(ngModel)]="jugadorEditar.whatsapp" required>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Teléfono</label>
+                                        <input type="text" class="form-control" name="tel" #tel="ngModel"
+                                            pattern="[0-9]+" minlength="5" maxlength="12"
+                                            [(ngModel)]="jugadorEditar.telefono" required>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>Fecha nacimiento</label>
+                                        <input type="date" class="form-control" name="fecha" #fecha="ngModel"
+                                            [(ngModel)]="jugadorEditar.fecha_nacimiento" required>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Alias</label>
+                                        <input type="text" class="form-control" name="alias" #alias="ngModel"
+                                            [(ngModel)]="jugadorEditar.alias">
+                                        <div class="msj-error p-2 mt-1 rounded" *ngIf="alias.touched && alias.invalid">
+                                            Ingrese un alias
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label>Provincia</label>
+                                        <select class="form-select" name="provincia" [(ngModel)]="provinciaEditar"
+                                            (change)="getCiudadesEditar()">
+                                            <option style="display:none"></option>
+                                            <option *ngFor="let x of provincias" [value]="x.codigo_prov">
+                                                {{x.nombre_prov}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Ciudad</label>
+                                        <select class="form-select" name="ciudad" #ciudad="ngModel"
+                                            [(ngModel)]="jugadorEditar.ciudad" required>
+                                            <option style="display:none"></option>
+                                            <option *ngFor="let x of ciudades" [value]="x.nombre_ciu">
+                                                {{x.nombre_ciu}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary"
+                    [disabled]="formJugadorEditar.invalid || cedulaExiste == 'existe-en-este-campeonato'"
+                    (click)="actualizarJugador()">
+                    <i class="far fa-save"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales de ingresp rápido -->
+
+<!-- Modal ingreso -->
+<div class="modal fade" id="modalIngresoRapido" tabindex="-1" aria-labelledby="modalIngresoRapido" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="modalIngresoRapido">
+                    <i class="fas fa-users"></i> Agregar Jugador
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form #formJugadorIR="ngForm" id="formJugadorIR">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <label>Nombres *</label>
+                                <input type="text" class="form-control" name="nombres" #nombres="ngModel"
+                                    [(ngModel)]="jugadorCreate.nombres" required>
+                                <div *ngIf="nombres.invalid">
+                                    <span *ngIf="nombres.errors?.required" class="badge bg-warning text-dark"> <i
+                                            class="fas fa-exclamation-triangle"></i> Ingrese el nombre del
+                                        jugador</span>
+                                    <span *ngIf="nombres.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                            class="fas fa-exclamation-triangle"></i> Mínimo 4 caracteres</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Alias</label>
+                                <input type="text" class="form-control" name="alias" #alias="ngModel"
+                                    [(ngModel)]="jugadorCreate.alias">
+                                <div class="msj-error p-2 mt-1 rounded" *ngIf="alias.touched && alias.invalid">
+                                    Ingrese un alias
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" (click)="guardarJugadorFormaRapida()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal editar jugador -->
+<div class="modal fade" id="modalEditarRapido" tabindex="-1" aria-labelledby="modalEditarRapido" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="modalEditarRapido">
+                    <i class="fas fa-users"></i> Editar Jugador
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form #formJugadorEditar="ngForm" id="formJugadorEditar">
+                        <div class="row">
+                            <div class="col-lg-8 ">
+                                <label>Nombres</label>
+                                <input type="text" class="form-control" name="nombresE" #nombresE="ngModel"
+                                    [(ngModel)]="jugadorEditar.nombres" required>
+                                <div *ngIf="nombresE.invalid">
+                                    <span *ngIf="nombresE.errors?.required" class="badge bg-warning text-dark"> <i
+                                            class="fas fa-exclamation-triangle"></i> Ingrese el nombre del
+                                        jugador</span>
+                                    <span *ngIf="nombresE.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                            class="fas fa-exclamation-triangle"></i> Mínimo 4 caracteres</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Alias</label>
+                                <input type="text" class="form-control" name="alias" #alias="ngModel"
+                                    [(ngModel)]="jugadorEditar.alias">
+                                <div class="msj-error p-2 mt-1 rounded" *ngIf="alias.touched && alias.invalid">
+                                    Ingrese un alias
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary"
+                    (click)="actualizarJugador()">
+                    <i class="far fa-save"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

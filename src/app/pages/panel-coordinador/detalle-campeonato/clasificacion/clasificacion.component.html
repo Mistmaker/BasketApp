@@ -1,0 +1,112 @@
+<div class="card">
+    <div class="card-header text-white background-base">
+        <h5 class="pt-1">
+            <i class="fas fa-table"></i> Clasificación
+        </h5>
+    </div>
+</div>
+
+<div *ngIf="grupos">
+    <div class="card" *ngFor="let x of resultadoClasificacion">
+        <div class="card-header bg-primary text-light" (click)="x.colapsado=!x.colapsado">
+            <h5><i class="fas fa-table"></i> {{ x.grupo }} &nbsp;&nbsp;&nbsp; <i class="fas fa-lg fa-caret-{{ x.colapsado ? 'up' : 'down' }}"></i></h5> 
+        </div>
+        <div class="card-body" *ngIf="x.colapsado">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Equipo</th>
+                        <th>P</th>
+                        <th>PJ</th>
+                        <th>V</th>
+                        <th>D</th>
+                        <th>GF</th>
+                        <th>GC</th>
+                        <th>GD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let e of x.equipos">
+                        <th scope="row"> <img [src]="e.logoEquipoMostrar" class="image-equipo"> {{e.equipo}}</th>
+                        <td> <b> {{e.puntos}} </b> </td>
+                        <td>{{e.cantJuegos}}</td>
+                        <td>{{e.victorias}}</td>
+                        <td>{{e.derrotas}}</td>
+                        <td>{{e.goles_favor}}</td>
+                        <td>{{e.goles_contra}}</td>
+                        <td>{{e.goles_diferencia}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card" *ngIf="!grupos">
+    <div class="card-body">
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Equipo</th>
+                    <th>P</th>
+                    <th>PJ</th>
+                    <th>PG</th>
+                    <th>PP</th>
+                    <th>PNP</th>
+                    <th>TC</th>
+                    <th>CR</th>
+                    <th>CD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let x of resultadoClasificacion">
+                    <th scope="row"> <img [src]="x.logoEquipoMostrar" class="image-equipo"> {{x.equipo}}</th>
+                    <td> <b> {{x.puntos}} </b> </td>
+                    <td>{{x.cantJuegos}}</td>
+                    <td>{{x.victorias}}</td>
+                    <td>{{x.derrotas}}</td>
+                    <td>-</td>
+                    <td>{{x.goles_favor}}</td>
+                    <td>{{x.goles_contra}}</td>
+                    <td>{{x.goles_diferencia}}</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div>
+    <small>
+        <b>P</b> = Puntos |
+        <b>PJ</b> = Partidos Jugados |
+        <b>PG</b> = Victorias |
+        <b>PP</b> = Derrotas |
+        <b>PNP</b> = Partidos no presentados |
+        <b>TC</b> = Total Canastas |
+        <b>CR</b> = Canastas Recibidas |
+        <b>CD</b> = Canastas Diferencia
+    </small>
+</div>
+
+<h5 class="mb-3 mt-3 text-center text-primary">Goleadores del campeonato</h5>
+
+<table class="table table-sm table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Equipo</th>
+            <th>Jugador</th>
+            <th># Canastas</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let x of goleadores">
+            <th scope="row"> <img [src]="x.logoEquipoMostrar" class="image-equipo"> {{x.equipo}}</th>
+            <td> <b> {{x.nombreJugador}} </b> </td>
+            <td>{{x.goles}}</td>
+        </tr>
+    </tbody>
+</table>

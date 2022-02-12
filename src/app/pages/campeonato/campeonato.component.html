@@ -1,0 +1,62 @@
+<div class="navbar navss p-0 shadow" style="text-align: center;">
+    <!-- <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Futgol</a> -->
+    <!-- <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button> -->
+    <!-- <input class="form-control  input-search" type="text" placeholder="Buscar campeonatos"> -->
+    <div class="navbar-nav" style="text-align: center;">
+        <p class="text-light mt-3"> &nbsp;&nbsp;&nbsp;&nbsp; Futgol - Aplicación para administrar encuentros deportivos, Contáctanos: 0982792618</p>
+    </div>
+</div>
+
+<br>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-lg-2" *ngIf="mostrarLogo">
+            <div class="box border rounded">
+                <img src="assets/imagenes/logoperfilll.jpg" class="w-100 rounded border"
+                    *ngIf="campeonato.fotoPerfil == 'vacio'">
+                <img [src]="imagePerfil" class="w-100 rounded border"
+                    *ngIf="campeonato.fotoPerfil != 'vacio' && campeonato.fotoPerfil">
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h5>{{campeonato.nombre}} </h5>
+                    <p class="mb-2 mt-3"><b>Organizador: </b>{{campeonato.nombre_organizador}}</p>
+                    <p class="mb-2 mt-3"><b>Estado: </b>{{campeonato.estado_campeonato}}</p>
+                </div>
+                <div class="col-lg-4 text-end">
+                    <label class="seguidores rounded"><b>0 Seguidores</b></label>
+                    <p class="mb-0 mt-2"><b>Categoría: </b>{{campeonato.categoria}}</p>
+                </div>
+            </div>
+            <div class="opciones border p-2 rounded">
+
+                <button class="btn btn-success ms-3" [routerLink]="['./fechas']">
+                    <i class="far fa-calendar-alt"></i> Calendario
+                </button>
+
+                <button class="btn btn-success ms-3" [routerLink]="['./resultados']">
+                    <i class="far fa-file-alt"></i> Resultados
+                </button>
+
+                <button class="btn btn-success ms-3" [routerLink]="['./clasificacion']">
+                    <i class="fas fa-table"></i> Clasificación
+                </button>
+
+                <button class="btn btn-success ms-3" [routerLink]="['./noticias']">
+                    <i class="fas fa-receipt"></i> Noticias
+                </button>
+
+            </div>
+        </div>
+    </div>
+    <br>
+    <router-outlet></router-outlet>
+</div>
+
+<app-spinner></app-spinner>

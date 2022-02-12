@@ -1,0 +1,35 @@
+.contenedor{
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+.texto{
+    position: absolute;
+    top: 200px;
+    left: 100px;
+    background-color: #ee6730;
+    width: 500px;
+}
+.texto-info {
+    font-size: 20px;
+    width: 470px;
+}
+
+.campeonato-fondo {
+    background-color: #ee6730;
+}
+
+.seguidores {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    color: #ee6730;
+    padding-left: 10px;
+    padding-bottom: 2px;
+    padding-right: 5px;
+}
+
+.contenedor-campeonato {
+    position: relative;
+}

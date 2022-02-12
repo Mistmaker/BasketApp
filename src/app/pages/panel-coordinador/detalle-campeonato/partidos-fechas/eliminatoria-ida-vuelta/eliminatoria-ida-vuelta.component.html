@@ -1,0 +1,364 @@
+<div class="card">
+    <div class="card-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 pt-1">
+                    <h5><i class="far fa-calendar-alt"></i> Calendario</h5>
+                </div>
+                <div class="col-lg-4 pt-2">
+                    <b>Modalidad: </b> {{modalidad}}
+                </div>
+                <div class="col-lg-5 text-end pt-1">
+                    <button class="btn btn-outline-primary btn-sm" (click)="generarTodoAutomatico()">
+                        Generar encuentros de forma automática
+                   </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="container-fluid p-0">
+            <div *ngFor="let x of fechasDoble; let i = index">
+                <div class="border p-3">
+                    <div class="row border-bottom">
+                        <div class="col-lg-2">
+                            <h5>FECHA {{i+1}}</h5>
+                        </div>
+                        <div class="col-lg-3 pb-2 fechas-txt">
+                            <b>Fecha de ida: </b> {{x.fechaida}} <br>
+                            <b>Fecha de vuelta: </b> {{x.fechavuelta}}
+                        </div>
+                        <div class="col-lg-7 text-end pb-1 ">
+                            <button class="btn btn-outline-danger btn-sm ms-3" (click)="quitarFechas(x._id)">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                            <button class="btn btn-outline-info btn-sm ms-3" data-bs-toggle="modal"
+                                data-bs-target="#modalUpadateFechaDoble" (click)="getOneFecha(x._id)">
+                                <i class="far fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-warning btn-sm ms-3" data-bs-toggle="modal"
+                                data-bs-target="#modalAddEncuentroDoble" (click)="seleccionFecha(x._id)">
+                                <i class="fas fa-plus"></i> Agregar encuentro
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm ms-3"
+                                (click)="generarAutomaticamente(x._id)">
+                                Elegir de forma automática
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-sm table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Equipo 1</th>
+                                <th scope="col">Equipo 2</th>
+                                <th scope="col">Fecha y hora (ida)</th>
+                                <th scope="col">Fecha y hora (vuelta)</th>
+                                <th scope="col">Cancha (ida)</th>
+                                <th scope="col">Cancha (vuelta)</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let i of x.encuentros">
+                                <td>{{i.equipo1}}</td>
+                                <td>{{i.equipo2}}</td>
+                                <td>{{i.fechaida}} - {{i.horaida}}</td>
+                                <td>{{i.fechavuelta}} - {{i.horavuelta}}</td>
+                                <td>{{i.canchaida}}</td>
+                                <td>{{i.canchavuelta}}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm ms-3" (click)="quitarEncuentros(i._id)">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-sm ms-3" data-bs-toggle="modal"
+                                        data-bs-target="#modalEncuentroDobleUpdate"
+                                        (click)="getOneEncuentroDoble(i._id)">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-spinner></app-spinner>
+
+<!-- Modal modificar -->
+<div class="modal fade" id="modalUpadateFechaDoble" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="far fa-edit"></i> Modificar fecha
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formFechasUpDoble="ngForm" id="formFechasUpDoble">
+                    <div class="container mt-2">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Fecha:</label>
+                                <input type="date" class="form-control" name="fechaupD" #fechaupD="ngModel"
+                                    [(ngModel)]="fechaOne.fechaida" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Fecha:</label>
+                                <input type="date" class="form-control" name="fechaupvuelta" #fechaupvuelta="ngModel"
+                                    [(ngModel)]="fechaOne.fechavuelta" required>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formFechasUpDoble.invalid"
+                    (click)="actualizarFecha()">
+                    <i class="far fa-edit"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal encuentro update -->
+<div class="modal fade" id="modalEncuentroDobleUpdate" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="far fa-edit"></i> Modificar Encuentro
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formEncuentroDobleUp="ngForm" id="formEncuentroDobleUp">
+                    <div class="container mt-2 ps-4 pe-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Equipo 1</label>
+                                <input type="text" class="form-control" name="equipo1d" #equipo1d="ngModel"
+                                    [(ngModel)]="encuentroDobleOne.equipo1" disabled="disabled" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Equipo 2</label>
+                                <input type="text" class="form-control" name="equipo2d" #equipo2d="ngModel"
+                                    [(ngModel)]="encuentroDobleOne.equipo2" disabled="disabled" required>
+                            </div>
+                        </div>
+                        <div class="error mt-1 rounded"
+                            *ngIf="encuentroDobleOne.equipo1 == encuentroDobleOne.equipo2 && equipo1d.touched">
+                            Los equipos no pueden ser iguales
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Fecha de ida:</label>
+                                <input type="date" class="form-control" name="fechaida" #fechaida="ngModel"
+                                    [(ngModel)]="encuentroDobleOne.fechaida" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Hora de ida:</label>
+                                <input type="time" class="form-control" name="horaida" #horaida="ngModel"
+                                    [(ngModel)]="encuentroDobleOne.horaida" required>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Fecha de vuelta:</label>
+                                <input type="date" class="form-control" name="fechavuelta" #fechavuelta="ngModel"
+                                    [(ngModel)]="encuentroDobleOne.fechavuelta" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Hora de vuelta:</label>
+                                <input type="time" class="form-control" name="horavuelta" #horavuelta="ngModel"
+                                    [(ngModel)]="encuentroDobleOne.horavuelta" required>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Cancha de ida</label>
+                                <select class="form-select mt-1" name="canchaida" #canchaida="ngModel"
+                                    [(ngModel)]="encuentroDobleOne.canchaida" required>
+                                    <option *ngFor="let x of canchas" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Cancha de vuelta</label>
+                                <select class="form-select mt-1" name="canchavuelta" #canchavuelta="ngModel"
+                                    [(ngModel)]="encuentroDobleOne.canchavuelta" required>
+                                    <option *ngFor="let x of canchas" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formEncuentroDobleUp.invalid" (click)="actualizarEncuentro()">
+                    <i class="far fa-edit"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalAddEncuentroDoble" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-plus"></i> Agregar Encuentro
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formEncuentroDoble="ngForm" id="formEncuentroDoble">
+                    <div class="container mt-2 ps-4 pe-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Equipo 1</label>
+                                <select class="form-select mt-1" name="equipo1d" #equipo1d="ngModel"
+                                    [(ngModel)]="encuentroDobleCreate.equipo1" required>
+                                    <option *ngFor="let x of equiposShow" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Equipo 2</label>
+                                <select class="form-select mt-1" name="equipo2d" #equipo2d="ngModel"
+                                    [(ngModel)]="encuentroDobleCreate.equipo2" required>
+                                    <option *ngFor="let x of equiposShow" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="error mt-1 rounded"
+                            *ngIf="encuentroDobleCreate.equipo1 == encuentroDobleCreate.equipo2 && equipo1d.touched">
+                            Los equipos no pueden ser iguales
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Fecha de ida:</label>
+                                <input type="date" class="form-control" name="fechaida" #fechaida="ngModel"
+                                    [(ngModel)]="encuentroDobleCreate.fechaida" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Hora de ida:</label>
+                                <input type="time" class="form-control" name="horaida" #horaida="ngModel"
+                                    [(ngModel)]="encuentroDobleCreate.horaida" required>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Fecha de vuelta:</label>
+                                <input type="date" class="form-control" name="fechavuelta" #fechavuelta="ngModel"
+                                    [(ngModel)]="encuentroDobleCreate.fechavuelta" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Hora de vuelta:</label>
+                                <input type="time" class="form-control" name="horavuelta" #horavuelta="ngModel"
+                                    [(ngModel)]="encuentroDobleCreate.horavuelta" required>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Cancha de ida</label>
+                                <select class="form-select mt-1" name="canchaida" #canchaida="ngModel"
+                                    [(ngModel)]="encuentroDobleCreate.canchaida" required>
+                                    <option *ngFor="let x of canchas" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Cancha de vuelta</label>
+                                <select class="form-select mt-1" name="canchavuelta" #canchavuelta="ngModel"
+                                    [(ngModel)]="encuentroDobleCreate.canchavuelta" required>
+                                    <option *ngFor="let x of canchas" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formEncuentroDoble.invalid"
+                    (click)="agregarEncuentros()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAddFechaElimDoble" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-plus"></i> Agregar fecha
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formFechaDoble="ngForm" id="formFechaDoble">
+                    <div class="container mt-2 ps-4 pe-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Fecha de ida:</label>
+                                <input type="date" class="form-control" name="fechaida" #fechaida="ngModel"
+                                    [(ngModel)]="fechaCreate.fechaida" required>
+                                <br>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Fecha de vuelta:</label>
+                                <input type="date" class="form-control" name="fechavuelta" #fechavuelta="ngModel"
+                                    [(ngModel)]="fechaCreate.fechavuelta" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formFechaDoble.invalid"
+                    (click)="guardarFechaElimDoble()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

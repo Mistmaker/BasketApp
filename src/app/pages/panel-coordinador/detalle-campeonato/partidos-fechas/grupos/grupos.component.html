@@ -1,0 +1,372 @@
+<div class="card">
+    <div class="card-header text-white background-base">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 pt-1">
+                    <h5><i class="far fa-calendar-alt"></i> Calendario</h5>
+                </div>
+                <div class="col-lg-5 pt-2">
+                    <b>Modalidad: </b> Grupos
+                </div>
+                <div class="col-lg-4 text-end pt-1">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalAddGrupos" *ngIf="existenGrupoas == false">
+                        <i class="fas fa-plus"></i> Agregar grupos
+                    </button>
+                    <button class="btn btn-primary btn-sm"
+                        *ngIf="existenGrupoas == true && existenEncuentros == false"
+                        (click)="generarEncuentrosAutomaticos()">
+                        <i class="fas fa-cogs"></i> Generar encuentros automaticamente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- *ngIf="existenEncuentros == false" -->
+        <div class="container-fluid p-0">
+            <div class="row">
+                <div class="col-lg-4 mb-2" *ngFor="let x of grupos">
+                    <div class="card">
+                        <div class="card-header bg-primary text-light">
+                            <div class="row">
+                                <div class="col-5 pt-1">
+                                    <b>{{x.nombre}}</b>
+                                </div>
+                                <div class="col-7 text-end pe-0 ps-0">
+                                    <button class="btn btn-secondary btn-sm" (click)="addSeleccion(x._id)"
+                                        data-bs-toggle="modal" data-bs-target="#modalAddEquipoC"
+                                        *ngIf="existenEncuentros == false">
+                                        <i class="fas fa-plus"></i> añadir equipo
+                                    </button>
+                                    <button class="btn btn-danger ms-2 btn-sm" (click)="eliminarGrupo(x._id)"
+                                        *ngIf="existenEncuentros == false">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm table-striped">
+                                <tbody>
+                                    <tr *ngFor="let d of x.equipos">
+                                        <td>{{d.equipo}}</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" (click)="eliminarEquipo(d._id)"
+                                                *ngIf="existenEncuentros == false">
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid p-0" *ngIf="encuentrosGrupos.length>0">
+            <div class="card mb-3" *ngFor="let grupo of encuentrosGrupos" (click)="grupo.colapsado=!grupo.colapsado">
+                <div class="card-header text-white background-base">
+                    <b>{{grupo.nombre}}</b> &nbsp;&nbsp;&nbsp; <i
+                        class="fas fa-lg fa-caret-{{ grupo.colapsado ? 'up' : 'down' }}"></i>
+                </div>
+                <div *ngIf="grupo.colapsado">
+                    <div *ngFor="let fecha of grupo.fechas; let i = index">
+                        <div class="card-header bg-primary text-light">
+                            <b>FECHA {{fecha.numero}}- {{fecha.tipo}}</b>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Equipo 1</th>
+                                        <th scope="col">Equipo 2</th>
+                                        <th scope="col">Fecha y hora</th>
+                                        <th scope="col">Cancha</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let encuentro of fecha.encuentros">
+                                        <td> <img [src]="encuentro.logoEquipo1" class="image-equipo">
+                                            {{encuentro.equipo1}}
+                                        </td>
+                                        <td> <img [src]="encuentro.logoEquipo2" class="image-equipo">
+                                            {{encuentro.equipo2}}
+                                        </td>
+                                        <td>{{encuentro.fecha}} - {{encuentro.hora}}</td>
+                                        <td>{{encuentro.cancha}}</td>
+                                        <td>
+                                            <!-- <button class="btn btn-danger btn-sm ms-3"
+                                                    (click)="deleteEncuentro(encuentro._id)" *ngIf="mostrarBotonesManuales">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </button> -->
+
+                                            <!-- *ngIf="encuentro.equipo1 != 'Fecha Libre' && encuentro.equipo2 != 'Fecha Libre'" -->
+                                            <button class="btn btn-primary btn-sm ms-3" data-bs-toggle="modal"
+                                                data-bs-target="#modalEncuentroUpdate"
+                                                *ngIf="(encuentro.equipo1 != 'Fecha Libre' && encuentro.equipo2 != 'Fecha Libre') && mostrarBotonEditar"
+                                                [disabled]="encuentro.estadorelleno"
+                                                (click)="getOneEncuentro(encuentro._id)">
+                                                <i class="far fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- <div class="container-fluid p-0" *ngIf="encuentrosGrupos.length>0">
+            <div class="card mb-3" *ngFor="let x of encuentrosGrupos">
+                <div class="card-header">
+                    <b>{{x.nombre}}</b>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-hover" *ngIf="x.modalidad == 'Solo ida'">
+                        <thead>
+                            <tr>
+                                <th scope="col">Equipo1</th>
+                                <th scope="col">Equipo2</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Hora</th>
+                                <th scope="col">Cancha</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let i of x.encuentros">
+                                <td>{{i.equipo1}}</td>
+                                <td>{{i.equipo2}}</td>
+                                <td>{{i.fecha}}</td>
+                                <td>{{i.hora}}</td>
+                                <td>{{i.cancha}}</td>
+                                <td>
+                                    <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalEncuentroUpdateGrupo" (click)="getEncuentroOne(i._id)">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-hover" *ngIf="x.modalidad == 'Ida y vuelta'">
+                        <thead>
+                            <tr>
+                                <th scope="col">Equipo1</th>
+                                <th scope="col">Equipo2</th>
+                                <th scope="col">Fecha y hora (Ida)</th>
+                                <th scope="col">Fecha y hora (Ida y vuelta)</th>
+                                <th scope="col">Cancha (Ida)</th>
+                                <th scope="col">Cancha (Ida y vuelta)</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let i of x.encuentros">
+                                <td>{{i.equipo1}}</td>
+                                <td>{{i.equipo2}}</td>
+                                <td>{{i.fechaida}} {{i.horaida}}</td>
+                                <td>{{i.fechavuelta}} {{i.horavuelta}}</td>
+                                <td>{{i.canchaida}} {{i.canchavuelta}}</td>
+                                <td>
+                                    <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalEncuentroUpdateGrupoDoble" (click)="getEncuentroOneDoble(i._id)">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>
+
+<!-- Modal encuentro update -->
+<div class="modal fade" id="modalEncuentroUpdate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="far fa-edit"></i> Modificar Encuentro
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formEncuentroUp="ngForm" id="formEncuentroUp">
+                    <div class="container mt-2 ps-4 pe-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Equipo 1</label>
+                                <input type="text" class="form-control mt-1" name="equipo1up" #equipo1up="ngModel"
+                                    [(ngModel)]="encuentroOne.equipo1" disabled="disabled">
+                                <!-- <select class="form-select mt-1" name="idequipo1" [(ngModel)]="encuentroOne.equipo1"
+                                    required>
+                                    <option *ngFor="let x of equipos" value="{{x.nombre}}">{{x.nombre}}
+                                    </option>
+                                    <option value="Fecha Libre">Fecha Libre</option>
+                                </select> -->
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Equipo 2</label>
+                                <input type="text" class="form-control mt-1" name="equipo2up" #equipo2up="ngModel"
+                                    [(ngModel)]="encuentroOne.equipo2" disabled="disabled">
+                                <!-- <select class="form-select mt-1" name="idequipo2" [(ngModel)]="encuentroOne.equipo2"
+                                    required>
+                                    <option *ngFor="let x of equipos" value="{{x.nombre}}">{{x.nombre}}
+                                    </option>
+                                    <option value="Fecha Libre">Fecha Libre</option>
+                                </select> -->
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Fecha:</label>
+                                <input type="date" class="form-control" name="fechaup" #fechaup="ngModel"
+                                    [(ngModel)]="encuentroOne.fecha" [required]="true">
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Hora:</label>
+                                <input type="time" class="form-control" name="horaup" #horaup="ngModel"
+                                    [(ngModel)]="encuentroOne.hora" [required]="true">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Cancha</label>
+                                <select class="form-select mt-1" name="canchaup" #canchaup="ngModel"
+                                    [(ngModel)]="encuentroOne.cancha" [required]="false">
+                                    <option *ngFor="let x of canchas" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formEncuentroUp.invalid"
+                    (click)="actualizarEncuentro()">
+                    <i class="far fa-edit"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal encuentro manual ingreso-->
+<div class="modal fade" id="modalAddEquipoC" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-plus"></i> Agregar equipos
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formEquiCre="ngForm" id="formEquiCre">
+                    <div class="container mt-2 ps-4 pe-4">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Seleccionar equipo:</label>
+                                <select class="form-select mt-1" name="idequipo" [(ngModel)]="idequipo" required>
+                                    <option *ngFor="let x of equipos" value="{{x._id}}-{{x.nombre}}">{{x.nombre}}
+                                    </option>
+                                </select>
+                                <div class="error" *ngIf="mensajeEquipo != ''">{{mensajeEquipo}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formEquiCre.invalid"
+                    (click)="agregarEquipoGrupo()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal agregar grupos-->
+<div class="modal fade" id="modalAddGrupos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-plus"></i> Agregar fecha
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formGruposCre="ngForm" id="formGruposCre">
+                    <div class="container mt-2 ps-4 pe-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Cantidad de grupos:</label>
+                                <select class="form-select mt-1" name="cant" #cant="ngModel" [(ngModel)]="cantGrupos"
+                                    required>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Modalidad de encuentros:</label>
+                                <select class="form-select mt-1" name="modalidad" #modalidad="ngModel"
+                                    [(ngModel)]="modalidadGrupo" required>
+                                    <option value="Solo ida">Solo ida</option>
+                                    <option value="Ida y vuelta">Ida y vuelta</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <div *ngIf="existenGrupoas == true">
+                    <span class="badge bg-warning text-dark"> <i class="fas fa-exclamation-triangle"></i> Ya han sido
+                        creado
+                        los grupos, no se necesita crear mas</span>
+                </div>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formGruposCre.invalid || !habilitarGuardar"
+                    (click)="guardarGrupos()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-spinner></app-spinner>

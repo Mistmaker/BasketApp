@@ -1,0 +1,32 @@
+<nav class="container-fluid p-3 navBar-fondo">
+    <div class="row">
+        <div class="col-lg-2 text-light">
+            <a class="navbar-brand ms-4 text-light"><b>LOGO</b></a>
+        </div>
+        <div class="col-lg-4 pe-0">
+            <div class="input-group">
+                <input type="text" class="form-control" [(ngModel)]="busqueda" (keyup)="buscarCampeoantos()" placeholder="Buscar campeonatos">
+                <button class="btn btn-outline-light" type="button" id="button-addon2">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-lg-6 text-end pe-3 text-light">
+            <div class="row">
+                <div class="col-lg-9">
+                    <label class="item cursor"><i class="fas fa-mobile-alt"></i> La App</label>
+                    <label class="item cursor"><i class="fas fa-users"></i> Campeonatos</label>
+                    <label class="item cursor"><i class="far fa-address-book"></i> Contacto</label>
+                    <label class="item cursor" [routerLink]="['/registro']">
+                        <i class="fas fa-house-user"></i> Registrarse
+                    </label>
+                </div>
+                <div class="col-lg-3">
+                    <button class="btn btn-outline-light" type="submit" [routerLink]="['/login']">
+                        <i class="fas fa-sign-in-alt"></i> Ingresar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

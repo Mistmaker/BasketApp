@@ -1,0 +1,30 @@
+<div class="container mb-5">
+    <br> <br> <br>
+    <div class="row justify-content-center">
+        <div class="col-lg-4 border rounded ps-4 pe-4">
+            <br> <br>
+            <h3>Restablecer contraseña</h3>
+                        <br>
+            <div class="info">
+                <p class="mb-1">
+                    Enviaremos una nueva contraseña a tu correo electrónico.
+                </p>
+            </div>
+            <br> 
+            <div class="errInput rounded mt-0 mb-3" *ngIf="!emailExiste">
+                Este email no se encuentra registrado.
+            </div>
+            <input type="email" class="form-control" placeholder="Ingresar correo electrónico" name="correo" 
+            [(ngModel)]="correo" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+            <br>
+            <button class="btn btn-success w-100 mt-3" (click)="verificarEmailExistente()" [disabled]="correo == ''">
+                Restablecer
+            </button>
+            <br> <br> <br>
+        </div>
+    </div>
+</div>
+
+<br> <br> <br> <br>
+
+<app-spinner></app-spinner>

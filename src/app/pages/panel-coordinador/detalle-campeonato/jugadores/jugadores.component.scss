@@ -1,0 +1,40 @@
+.subir-image {
+  margin-top: 3px;
+  padding: 5px 10px;
+  color: #fff;
+  border: 0px solid #fff;
+  border: solid gray 2px;
+  border-style: dashed;
+  width: 100%;
+  height: auto;
+}
+
+#file-upload-imagen1 {
+  display: none;
+}
+
+.errInput {
+  font-size: 13px;
+  background-color: rgba(253, 82, 82, 0.575);
+  padding-left: 7px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.image-jugador {
+  width: 60px;
+  height: auto;
+}
+
+.msj-agregar {
+  background-color: rgb(174, 255, 174);
+}
+
+.msj-error {
+  background-color: rgb(250, 169, 169);
+  font-size: 14px;
+}
+
+.text-agregar {
+  font-size: 14px;
+}

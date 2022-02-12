@@ -1,0 +1,67 @@
+<div class="card">
+    <h5 class="card-header text-white background-base">
+        <i class="fas fa-cog"></i> Configuración de campeonato: {{campeonato.nombre}}
+    </h5>
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-10">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" [(ngModel)]="campeonato.configuraciones.jugadores_ingreso_rapido"
+                        name="jugadores_ingreso_rapido" type="checkbox" id="jugadores_ingreso_rapido">
+                    <label class="form-check-label" for="jugadores_ingreso_rapido">Ingreso rápido de jugadores </label>
+                    <label class="form-text ms-3" *ngIf="!campeonato.configuraciones.jugadores_ingreso_rapido"> <span
+                            class="badge bg-secondary">Deberá ingresar todos los datos del jugador</span> </label>
+                    <label class="form-text ms-3" *ngIf="campeonato.configuraciones.jugadores_ingreso_rapido"> <span
+                            class="badge bg-secondary">Solo ingresará los nombres</span> </label>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <h5>Suspención bajo acumulación de tarjetas amarillas</h5>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Cantidad Tarjetas</label>
+                    <input [(ngModel)]="campeonato.configuraciones.suspension_cant_ta.cantidad"
+                        name="suspension_cant_ta" type="number" class="form-control form-control-sm" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label"># Partidos Suspendidos</label>
+                    <input [(ngModel)]="campeonato.configuraciones.suspension_cant_ta.partidos_suspendidos"
+                        name="suspension_cant_ta" type="number" class="form-control form-control-sm" />
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <h5>Suspención bajo acumulación de tarjetas rojas</h5>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Cantidad Tarjetas</label>
+                    <input [(ngModel)]="campeonato.configuraciones.suspension_cant_tr.cantidad"
+                        name="suspension_cant_tr" type="number" class="form-control form-control-sm" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label"># Partidos Suspendidos</label>
+                    <input [(ngModel)]="campeonato.configuraciones.suspension_cant_tr.partidos_suspendidos"
+                        name="suspension_cant_tr" type="number" class="form-control form-control-sm" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer text-end">
+        <button class="btn btn-outline-success" (click)="guardarCambios()">
+            <i class="far fa-save"></i> Guardar cambios
+        </button>
+    </div>
+</div>

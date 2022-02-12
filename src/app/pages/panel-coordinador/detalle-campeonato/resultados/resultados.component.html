@@ -1,0 +1,389 @@
+<div class="card">
+    <div class="card-header text-white background-base">
+        <h5 class="pt-1">
+            <i class="far fa-file-alt"></i> Resultados
+        </h5>
+    </div>
+</div>
+
+<div *ngIf="modalidadCampeonato != 'Grupos'">
+    <div class="mt-1" *ngFor="let x of fechas; let i = index">
+        <div class="card mb-2" *ngIf="tieneEncuentrosAsignados(x.encuentros)">
+            <div class="card-header bg-primary text-light">
+                {{x.grupo}} Fecha {{x.numero}} {{x.fecha}}
+            </div>
+            <div class="card-body bg-white">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">Equipo 1</th>
+                                <th scope="col">Equipo 2</th>
+                                <th scope="col">Fecha y hora</th>
+                                <th scope="col">Cancha</th>
+                                <th scope="col">Marcador</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let i of x.encuentros">
+                                <td *ngIf="i.cancha != '' || i.fecha != ''"> <img [src]="i.logoEquipo1"
+                                        class="image-equipo"> {{i.equipo1}}</td>
+                                <td *ngIf="i.cancha != '' || i.fecha != ''"> <img [src]="i.logoEquipo2"
+                                        class="image-equipo"> {{i.equipo2}}</td>
+                                <td *ngIf="i.cancha != '' || i.fecha != ''">{{i.fecha}} {{i.hora}}</td>
+                                <td *ngIf="i.cancha != '' || i.fecha != ''">{{i.cancha}}</td>
+                                <td *ngIf="i.cancha != '' || i.fecha != ''">
+                                    <label>
+                                        <span class="badge bg-primary">{{ i.resultado1 }}</span> - <span
+                                            class="badge bg-primary">{{ i.resultado2 }}</span>
+                                    </label>
+                                    <span class="badge bg-danger" *ngIf="i.estadorelleno == false">Sin Confirmar</span>
+                                    <!-- <label *ngIf="i.estadorelleno == false">
+                                                Sin Confirmar
+                                            </label> -->
+                                </td>
+                                <td *ngIf="i.cancha != '' || i.fecha != ''">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#resultados" (click)="verResultadosEncuentro(i)">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm" *ngIf="mostrarBotones"
+                                            [disabled]="i.estadorelleno == true"
+                                            [routerLink]="['/panel/detalle-campeonato/gestion-resultados', i._id]">
+                                            <i class="fas fa-user-cog"></i> Gestionar
+                                        </button>
+                                        <button class="btn btn-outline-success btn-sm"
+                                            *ngIf="mostrarBotones  && i.estadorelleno == false"
+                                            [disabled]="i.estadorelleno == true" (click)="confirmarResultado(i)">
+                                            <i class="fas fa-check"></i> Confirmar
+                                        </button>
+                                        <button class="btn btn-outline-warning btn-sm"
+                                            *ngIf="mostrarBotones && i.estadorelleno == true"
+                                            [disabled]="i.estadorelleno == false" (click)="desconfirmarResultado(i)">
+                                            <i class="fas fa-check"></i> Desconfirmar
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="modalidadCampeonato == 'Grupos'">
+    <div class="mt-1" *ngFor="let fecha of fechas; let i = index">
+        <!-- *ngIf="tieneEncuentrosAsignados(x.encuentros)" -->
+        <div class="card mb-2 bg-white">
+            <div class="card-header bg-primary text-light" (click)="fecha.colapsado=!fecha.colapsado">
+                <b> {{fecha.grupo}} Fecha {{fecha.numero}} {{fecha.fecha}} &nbsp;&nbsp;&nbsp; <i
+                        class="fas fa-lg fa-caret-{{ fecha.colapsado ? 'up' : 'down' }}"></i> </b>
+            </div>
+
+            <div *ngIf="fecha.colapsado">
+                <div *ngFor="let grupo of fecha.grupos">
+                    <span class="badge bg-warning w-100" style="text-transform: uppercase;">{{ grupo.nombre }}</span>
+
+                    <div class="card-body bg-white">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Equipo 1</th>
+                                        <th scope="col">Equipo 2</th>
+                                        <th scope="col">Fecha y hora</th>
+                                        <th scope="col">Cancha</th>
+                                        <th scope="col">Marcador</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let i of grupo.encuentros">
+                                        <td *ngIf="i.cancha != '' || i.fecha != ''"> <img [src]="i.logoEquipo1"
+                                                class="image-equipo"> {{i.equipo1}} </td>
+                                        <td *ngIf="i.cancha != '' || i.fecha != ''"> <img [src]="i.logoEquipo2"
+                                                class="image-equipo"> {{i.equipo2}}</td>
+                                        <td *ngIf="i.cancha != '' || i.fecha != ''">{{i.fecha}} {{i.hora}}</td>
+                                        <td *ngIf="i.cancha != '' || i.fecha != ''">{{i.cancha}}</td>
+                                        <td *ngIf="i.cancha != '' || i.fecha != ''">
+                                            <label>
+                                                <span class="badge bg-primary">{{ i.resultado1 }}</span> - <span
+                                                    class="badge bg-primary">{{ i.resultado2 }}</span>
+                                            </label>
+                                            <span class="badge bg-danger" *ngIf="i.estadorelleno == false">Sin
+                                                Confirmar</span>
+                                            <!-- <label *ngIf="i.estadorelleno == false">
+                                                        Sin Confirmar
+                                                    </label> -->
+                                        </td>
+                                        <td *ngIf="i.cancha != '' || i.fecha != ''">
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#resultados" (click)="verResultadosEncuentro(i)">
+                                                    <i class="fas fa-eye"></i> Ver
+                                                </button>
+                                                <button class="btn btn-outline-primary btn-sm" *ngIf="mostrarBotones"
+                                                    [disabled]="i.estadorelleno == true"
+                                                    [routerLink]="['/panel/detalle-campeonato/gestion-resultados', i._id]">
+                                                    <i class="fas fa-user-cog"></i> Gestionar
+                                                </button>
+                                                <button class="btn btn-outline-success btn-sm"
+                                                    *ngIf="mostrarBotones  && i.estadorelleno == false"
+                                                    [disabled]="i.estadorelleno == true"
+                                                    (click)="confirmarResultado(i)">
+                                                    <i class="fas fa-check"></i> Confirmar
+                                                </button>
+                                                <button class="btn btn-outline-warning btn-sm"
+                                                    *ngIf="mostrarBotones && i.estadorelleno == true"
+                                                    [disabled]="i.estadorelleno == false"
+                                                    (click)="desconfirmarResultado(i)">
+                                                    <i class="fas fa-check"></i> Desconfirmar
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!tieneEncuentrosAsignados(grupo.encuentros)">
+                                        <td colspan="6" style="text-align: center;"> Sin encuentros asignados</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Ver Resultados-->
+<div class="modal fade" id="resultados" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-flag"></i> Resultados
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="text-center">
+                    <h3>
+                        <img [src]="logoEquipo1" class="image-equipo">
+                        {{encuentroMostrar.equipo1}} <span class="badge bg-primary">{{encuentroMostrar.resultado1}}
+                        </span>
+                        VS
+                        <span class="badge bg-primary">{{encuentroMostrar.resultado2}} </span>
+                        {{encuentroMostrar.equipo2}}
+                        <img [src]="logoEquipo2" class="image-equipo">
+                    </h3>
+                </div>
+
+                <div>
+                    <b>Fecha:</b> {{ encuentroMostrar.fecha }} <br>
+                    <b>Hora:</b> {{ encuentroMostrar.hora }} <br>
+                    <b>Cancha:</b> {{ encuentroMostrar.cancha }} <br>
+                </div>
+
+                <br>
+
+
+                <div class="">
+                    <h5 class="mb-0 text-primary">{{encuentroMostrar.equipo1}}</h5>
+                </div>
+
+                <table class="table table-sm table-bordered table-responsive">
+                    <thead>
+                        <tr class="table-success">
+                            <th scope="col">Jugador</th>
+                            <th>PD</th>
+                            <th>PT</th>
+                            <th>Sanciones</th>
+                            <th>Obs.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let x of resultadosEquipo1;let i = index">
+                            <td style="width: 40%;">
+                                {{ x.nombrejugador }}
+                            </td>
+                            <td style="width: 5%;">
+                                {{ x.puntos_dobles }}
+                            </td>
+                            <td style="width: 5%;">
+                                {{ x.puntos_triples }}
+                            </td>
+                            <td>
+                                {{ x.sanciones }}
+                            </td>
+                            <td>
+                                {{ x.observacion }}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td>Total</td>
+                            <td colspan="2"><b> {{sumapuntosEq1}} </b></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr *ngIf="resultadosEquipo1.length == 0">
+                            <td colspan="5" style="text-align: center;"> Sin datos </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <br>
+                <div class="">
+                    <h5 class="mb-0 text-primary">{{encuentroMostrar.equipo2}}</h5>
+                </div>
+
+                <table class="table table-sm table-bordered table-responsive">
+                    <thead>
+                        <tr class="table-success">
+                            <th scope="col">Jugador</th>
+                            <th>PD</th>
+                            <th>PT</th>
+                            <th>Sanciones</th>
+                            <th>Obs.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let x of resultadosEquipo2;let i = index">
+                            <td style="width: 40%;">
+                                {{ x.nombrejugador }}
+                            </td>
+                            <td style="width: 5%;">
+                                {{ x.puntos_dobles }}
+                            </td>
+                            <td style="width: 5%;">
+                                {{ x.puntos_triples }}
+                            </td>
+                            <td>
+                                {{ x.sanciones }}
+                            </td>
+                            <td>
+                                {{ x.observacion }}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td>Total</td>
+                            <td colspan="2"><b> {{sumapuntosEq2}} </b></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr *ngIf="resultadosEquipo2.length == 0">
+                            <td colspan="5" style="text-align: center;"> Sin datos </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <div class="text-center">
+                    <h3>Parciales de cada Cuarto</h3>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered ">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">Cuarto</th>
+                                <th class="text-center">{{encuentroMostrar.equipo1}}</th>
+                                <th class="text-center">{{encuentroMostrar.equipo2}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center">
+                                <td style="width: 30%;">
+                                    <b>1/4</b>
+                                </td>
+                                <td>
+                                    {{ encuentroMostrar.cuartos_basquet.pc.equipo1 }}
+                                </td>
+                                <td>
+                                    {{ encuentroMostrar.cuartos_basquet.pc.equipo2 }}
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td style="width: 30%;">
+                                    <b>2/4</b>
+                                </td>
+                                <td>
+                                    {{ encuentroMostrar.cuartos_basquet.sc.equipo1 }}
+                                </td>
+                                <td>
+                                    {{ encuentroMostrar.cuartos_basquet.sc.equipo2 }}
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td style="width: 30%;">
+                                    <b>3/4</b>
+                                </td>
+                                <td>
+                                    {{ encuentroMostrar.cuartos_basquet.tc.equipo1 }}
+                                </td>
+                                <td>
+                                    {{ encuentroMostrar.cuartos_basquet.tc.equipo2 }}
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td style="width: 30%;">
+                                    <b>4/4</b>
+                                </td>
+                                <td>
+                                    {{ encuentroMostrar.cuartos_basquet.cc.equipo1 }}
+                                </td>
+                                <td>
+                                    {{ encuentroMostrar.cuartos_basquet.cc.equipo2 }}
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td style="width: 30%;" class="text-center">
+                                    <b>Total</b>
+                                </td>
+                                <td>
+                                    <b> {{sumapuntosCuartosEq1}} </b>
+                                </td>
+                                <td>
+                                    <b> {{sumapuntosCuartosEq2}} </b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <br>
+
+                <div class="table-responsive mt-3">
+                    <table class="table table-sm table-borderless">
+                        <thead>
+                            <tr class="text-center">
+                                <td style="width: 50%;"> <b> {{ repEq1 }} </b> </td>
+                                <td style="width: 50%;"> <b> {{ repEq2 }} </b> </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td style="width: 50%;">Rep. {{ encuentroMostrar.equipo1 }}</td>
+                                <td style="width: 50%;">Rep. {{ encuentroMostrar.equipo2 }}</td>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

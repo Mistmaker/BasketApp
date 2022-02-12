@@ -1,0 +1,314 @@
+<div class="card">
+    <div class="card-header text-white background-base">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 pt-1">
+                    <h5><i class="far fa-calendar-alt"></i> Calendario</h5>
+                </div>
+                <div class="col-lg-4 pt-2">
+                    <b>Modalidad: </b> Liga encuentros de ida
+                </div>
+                <div class="col-lg-5 text-end pt-1 " *ngIf="mostrarBotonesManuales">
+                    <button class="btn btn-outline-primary btn-sm me-3" data-bs-toggle="modal"
+                        data-bs-target="#modalAddFecha">
+                        <i class="fas fa-plus"></i> Agregar fecha
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm" (click)="generarEncuentros()">
+                        Generar de forma automática
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="container-fluid p-0">
+            <div *ngFor="let x of fechas; let i = index">
+                <div class="border p-3">
+                    <div class="row border-bottom  bg-primary text-light">
+                        <div class="col-lg-2">
+                            <h5>FECHA {{i+1}}</h5>
+                        </div>
+                        <div class="col-lg-2">
+                            {{x.fecha}}
+                        </div>
+                        <div class="col-lg-8 text-end pb-1" *ngIf="mostrarBotonesManuales">
+                            <button class="btn btn-outline-danger btn-sm ms-3" (click)="quitarFechas(x._id)">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                            <button class="btn btn-outline-info btn-sm ms-3" data-bs-toggle="modal"
+                                data-bs-target="#modalUpadateFecha" (click)="getOneFecha(x._id)">
+                                <i class="far fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-warning btn-sm ms-3" data-bs-toggle="modal"
+                                data-bs-target="#modalAddEncuentro" (click)="seleccionFecha(x._id)">
+                                <i class="fas fa-plus"></i> Agregar encuentro
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm ms-3"
+                                (click)="generarAutomaticamente(x._id)">
+                                Elegir de forma automática
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-sm table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Equipo 1</th>
+                                <th scope="col">Equipo 2</th>
+                                <th scope="col">Fecha y hora</th>
+                                <th scope="col">Cancha</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let i of x.encuentros">
+                                <td> <img [src]="i.logoEquipo1" class="image-equipo"> {{i.equipo1}}</td>
+                                <td> <img [src]="i.logoEquipo2" class="image-equipo"> {{i.equipo2}}</td>
+                                <td>{{i.fecha}} - {{i.hora}}</td>
+                                <td>{{i.cancha}}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm ms-3" (click)="deleteEncuentro(i._id)"
+                                        *ngIf="mostrarBotonesManuales">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-sm ms-3" data-bs-toggle="modal"
+                                        *ngIf="mostrarBotonEditar" data-bs-target="#modalEncuentroUpdate"
+                                        (click)="getOneEncuentro(i._id)">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal encuentro update -->
+<div class="modal fade" id="modalEncuentroUpdate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="far fa-edit"></i> Modificar Encuentro
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formEncuentroUp="ngForm" id="formEncuentroUp">
+                    <div class="container mt-2 ps-4 pe-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Equipo 1</label>
+                                <input type="text" class="form-control mt-1" name="equipo1up" #equipo1up="ngModel"
+                                    [(ngModel)]="encuentroOne.equipo1" disabled="disabled">
+                                <!-- <select class="form-select mt-1" name="idequipo1" [(ngModel)]="encuentroOne.equipo1"
+                                    required>
+                                    <option *ngFor="let x of equipos" value="{{x.nombre}}">{{x.nombre}}
+                                    </option>
+                                    <option value="Fecha Libre">Fecha Libre</option>
+                                </select> -->
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Equipo 2</label>
+                                <input type="text" class="form-control mt-1" name="equipo2up" #equipo2up="ngModel"
+                                    [(ngModel)]="encuentroOne.equipo2" disabled="disabled">
+                                <!-- <select class="form-select mt-1" name="idequipo2" [(ngModel)]="encuentroOne.equipo2"
+                                    required>
+                                    <option *ngFor="let x of equipos" value="{{x.nombre}}">{{x.nombre}}
+                                    </option>
+                                    <option value="Fecha Libre">Fecha Libre</option>
+                                </select> -->
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Fecha:</label>
+                                <input type="date" class="form-control" name="fechaup" #fechaup="ngModel"
+                                    [(ngModel)]="encuentroOne.fecha" [required]="true">
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Hora:</label>
+                                <input type="time" class="form-control" name="horaup" #horaup="ngModel"
+                                    [(ngModel)]="encuentroOne.hora" [required]="true">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Cancha</label>
+                                <select class="form-select mt-1" name="canchaup" #canchaup="ngModel"
+                                    [(ngModel)]="encuentroOne.cancha" [required]="true">
+                                    <option *ngFor="let x of canchas" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formEncuentroUp.invalid"
+                    (click)="actualizarEncuentro()">
+                    <i class="far fa-edit"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalAddEncuentro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-plus"></i> Agregar Encuentro
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formEncuentro="ngForm" id="formEncuentro">
+                    <div class="container mt-2 ps-4 pe-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Equipo 1</label>
+                                <select class="form-select mt-1" name="equipo1" #equipo1="ngModel"
+                                    [(ngModel)]="encuentroCreate.equipo1" required>
+                                    <option *ngFor="let x of equiposShow" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Equipo 2</label>
+                                <select class="form-select mt-1" name="equipo2" #equipo2="ngModel"
+                                    [(ngModel)]="encuentroCreate.equipo2" required>
+                                    <option *ngFor="let x of equiposShow" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="error mt-1 rounded"
+                            *ngIf="encuentroCreate.equipo1 == encuentroCreate.equipo2 && equipo1.touched">
+                            Los equipos no pueden ser iguales
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Fecha:</label>
+                                <input type="date" class="form-control" name="fecha" #fecha="ngModel"
+                                    [(ngModel)]="encuentroCreate.fecha" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Hora:</label>
+                                <input type="time" class="form-control" name="hora" #hora="ngModel"
+                                    [(ngModel)]="encuentroCreate.hora" required>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Cancha</label>
+                                <select class="form-select mt-1" name="cancha" #cancha="ngModel"
+                                    [(ngModel)]="encuentroCreate.cancha" required>
+                                    <option *ngFor="let x of canchas" value="{{x.nombre}}">{{x.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formEncuentro.invalid"
+                    (click)="agregarEncuentros()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalAddFecha" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-plus"></i> Agregar fecha
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formFechas="ngForm" id="formFechas">
+                    <div class="container mt-2 ps-4 pe-4">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Fecha:</label>
+                                <input type="date" class="form-control" name="fecha" #fecha="ngModel"
+                                    [(ngModel)]="fechasCreate.fecha" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formFechas.invalid" (click)="guardarFecha()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal modificar -->
+<div class="modal fade" id="modalUpadateFecha" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="far fa-edit"></i> Modificar fecha
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formFechasUp="ngForm" id="formFechasUp">
+                    <div class="container mt-2">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Fecha:</label>
+                                <input type="date" class="form-control" name="fechaup" #fechaup="ngModel"
+                                    [(ngModel)]="fechasUpdate.fecha" required>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formFechasUp.invalid"
+                    (click)="actualizarFecha()">
+                    <i class="far fa-edit"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-spinner></app-spinner>

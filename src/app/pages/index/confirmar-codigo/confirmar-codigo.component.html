@@ -1,0 +1,24 @@
+<div class="container mb-5">
+    <br> <br> <br>
+    <div class="row justify-content-center">
+        <div class="col-lg-4 border rounded ps-4 pe-4">
+            <form #formConf="ngForm" id="formConf">
+                <br>
+                <h3 class="mt-2">Confirmación</h3>
+                <p class="mt-3">Se ha enviado un código a tu correo electrónico para verificar tus datos</p>
+                <br>
+                <input type="text" class="form-control" placeholder="Código" name="codInput" [(ngModel)]="codigo">
+                <div class="errInput rounded mt-1" *ngIf="codigoEstado == false">
+                    El código de verificación es incorrecto.
+                </div>            
+                <br> <br>
+                <button class="btn btn-success w-100" (click)="saveUser()">
+                    Continuar
+                </button>
+                <br> <br> <br>
+            </form>
+        </div>
+    </div>
+</div>
+
+<app-spinner></app-spinner>

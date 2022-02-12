@@ -1,0 +1,50 @@
+<div class="container mb-5">
+    <br> <br> <br>
+    <div class="row justify-content-center">
+        <div class="col-lg-4 border rounded ps-4 pe-4">
+            <br> <br>
+            <h3>Iniciar Sesión</h3>
+            <br>
+            <div class="errInput mt-1 mb-3" *ngIf="credencialesIncorrectas">
+                Las credenciales son incorrectas
+            </div>    
+            <form #formLogin="ngForm" id="formLogin">
+                <label>Email:</label>
+                <input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" class="form-control" name="email" #email="ngModel"
+                [(ngModel)]="userLogin.correo" required>
+                <br>
+                <label class="mt-2">Contraseña:</label>
+                <div class="input-group" id="show_hide_password">
+                    <input class="form-control" type="password" [type]="getType()" name="clave" #clave="ngModel"
+                    [(ngModel)]="userLogin.password" required>
+                    <div class="input-group-text" id="basic-addon2">
+                        <a (click)="toggleTextPassword()">
+                            <i class="fa fa-eye-slash" *ngIf="!passEstado"></i>
+                            <i class="fas fa-eye" *ngIf="passEstado"></i>
+                        </a>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-lg-7 pe-0">
+                        <p class="enlace cursor" [routerLink]="['/registro']">Registrarse</p>
+                        <p class="enlace cursor" [routerLink]="['/restablecer-clave']">¿Has olvidado la contraseña?</p>
+                    </div>
+                    <div class="col-lg-5 text-end">
+                        <button class="btn btn-success" (click)="iniciarSesion()">
+                            Ingresar
+                        </button>
+                    </div>
+                </div>
+                <div class="text-end mt-2">
+
+                </div>
+                <br> <br>
+            </form>
+        </div>
+    </div>
+</div>
+
+<br> <br> <br> <br>
+
+<app-spinner></app-spinner>

@@ -1,0 +1,418 @@
+<div class="card">
+    <div class="card-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2">
+                    <button class="btn btn-outline-dark" [routerLink]="['/panel/detalle-campeonato/resultados']">
+                        <i class="fas fa-arrow-left"></i> Atrás
+                    </button>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="pt-1">
+                        <i class="fas fa-cogs"></i> Gestión Resultados
+                    </h5>
+                </div>
+                <!-- <div class="col-lg-6 text-end">
+                    <button class="btn btn-info" *ngIf="encuentroOne.estadorelleno == false"
+                        (click)="confirmarResultado()">
+                        <i class="far fa-check-square"></i> Confirmar resultado
+                    </button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="text-center">
+            <h3>{{encuentroOne.equipo1}} {{resultado1}} VS {{resultado2}} {{encuentroOne.equipo2}}</h3>
+        </div>
+
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h5 class="mb-0 text-primary">{{encuentroOne.equipo1}}</h5>
+                </div>
+                <div class="col-lg-6 text-end">
+                    <button class="btn btn-outline-primary mb-1 btn-sm"
+                        (click)="agregarNuevoDato(resultadosArray1,idequipo1)">
+                        <i class="fas fa-plus"></i> Agregar resultados de {{encuentroOne.equipo1}}
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Jugador</th>
+                            <th>PD</th>
+                            <th>PT</th>
+                            <th>Sanciones</th>
+                            <th>Obs.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let x of resultadosArray1;let i = index">
+                            <td style="width: 30%;">
+                                <select class="form-select form-select-sm" name="idjugador1{{i}}" #idjugador1="ngModel"
+                                    [(ngModel)]="x.idjugador" [value]="x.idjugador" required>
+                                    <option *ngFor="let x of jugadoresEquipo1" value="{{x._id}}">{{x.nombres}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control form-control-sm" name="puntos_dobles{{i}}"
+                                        [(ngModel)]="x.puntos_dobles" [value]="x.puntos_dobles" (change)="sumarPuntos()"
+                                        required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control form-control-sm" name="puntos_triples{{i}}"
+                                        [(ngModel)]="x.puntos_triples" [value]="x.puntos_triples"
+                                        (change)="sumarPuntos()" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control form-control-sm" name="sanciones{{i}}"
+                                        [(ngModel)]="x.sanciones" [value]="x.sanciones" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-sm" name="observacion{{i}}"
+                                        [(ngModel)]="x.observacion" [value]="x.observacion" required>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    (click)="quitarDato(resultadosArray1,i)">
+                                    <i class="fas fa-minus-circle"></i> </button>
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td>Total</td>
+                            <td colspan="2"> <b> {{sumapuntosEq1}} </b> </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr>
+
+            <div class="row mt-4">
+                <div class="col-lg-6">
+                    <h5 class="mb-0 text-primary">{{encuentroOne.equipo2}}</h5>
+                </div>
+                <div class="col-lg-6 text-end">
+                    <button class="btn btn-outline-primary mb-1 btn-sm"
+                        (click)="agregarNuevoDato(resultadosArray2,idequipo2)">
+                        <i class="fas fa-plus"></i> Agregar resultados de {{encuentroOne.equipo2}}
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered ">
+                    <thead>
+                        <tr>
+                            <th scope="col">Jugador</th>
+                            <th>PD</th>
+                            <th>PT</th>
+                            <th>Sanciones</th>
+                            <th>Obs.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let x of resultadosArray2;let i = index">
+                            <td style="width: 30%;">
+                                <select class="form-select form-select-sm" name="idjugador1{{i}}" #idjugador1="ngModel"
+                                    [(ngModel)]="x.idjugador" [value]="x.idjugador" required>
+                                    <option *ngFor="let x of jugadoresEquipo2" value="{{x._id}}">{{x.nombres}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control form-control-sm" name="puntos_dobles{{i}}"
+                                        [(ngModel)]="x.puntos_dobles" [value]="x.puntos_dobles" (change)="sumarPuntos()"
+                                        required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control form-control-sm" name="puntos_triples{{i}}"
+                                        [(ngModel)]="x.puntos_triples" [value]="x.puntos_triples"
+                                        (change)="sumarPuntos()" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control form-control-sm" name="sanciones{{i}}"
+                                        [(ngModel)]="x.sanciones" [value]="x.sanciones" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-sm" name="observacion{{i}}"
+                                        [(ngModel)]="x.observacion" [value]="x.observacion" required>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    (click)="quitarDato(resultadosArray2,i)">
+                                    <i class="fas fa-minus-circle"></i> </button>
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td>Total</td>
+                            <td colspan="2"><b> {{sumapuntosEq2}} </b></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="text-center">
+            <h3>Parciales de cada Cuarto</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered ">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">Cuarto</th>
+                        <th class="text-center">{{encuentroOne.equipo1}}</th>
+                        <th class="text-center">{{encuentroOne.equipo2}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="width: 30%;" class="text-center">
+                            <b>1/4</b>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" class="form-control form-control-sm" name="pceq1"
+                                    [(ngModel)]="encuentroOne.cuartos_basquet.pc.equipo1"
+                                    [value]="encuentroOne.cuartos_basquet.pc.equipo1" (change)="sumarPuntos()" required>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" class="form-control form-control-sm" name="pceq2"
+                                    [(ngModel)]="encuentroOne.cuartos_basquet.pc.equipo2"
+                                    [value]="encuentroOne.cuartos_basquet.pc.equipo2" (change)="sumarPuntos()" required>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%;" class="text-center">
+                            <b>2/4</b>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" class="form-control form-control-sm" name="sceq1"
+                                    [(ngModel)]="encuentroOne.cuartos_basquet.sc.equipo1"
+                                    [value]="encuentroOne.cuartos_basquet.sc.equipo1" (change)="sumarPuntos()" required>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" class="form-control form-control-sm" name="sceq2"
+                                    [(ngModel)]="encuentroOne.cuartos_basquet.sc.equipo2"
+                                    [value]="encuentroOne.cuartos_basquet.sc.equipo2" (change)="sumarPuntos()" required>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%;" class="text-center">
+                            <b>3/4</b>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" class="form-control form-control-sm" name="tceq1"
+                                    [(ngModel)]="encuentroOne.cuartos_basquet.tc.equipo1"
+                                    [value]="encuentroOne.cuartos_basquet.tc.equipo1" (change)="sumarPuntos()" required>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" class="form-control form-control-sm" name="tceq2"
+                                    [(ngModel)]="encuentroOne.cuartos_basquet.tc.equipo2"
+                                    [value]="encuentroOne.cuartos_basquet.tc.equipo2" (change)="sumarPuntos()" required>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%;" class="text-center">
+                            <b>4/4</b>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" class="form-control form-control-sm" name="cceq1"
+                                    [(ngModel)]="encuentroOne.cuartos_basquet.cc.equipo1"
+                                    [value]="encuentroOne.cuartos_basquet.cc.equipo1" (change)="sumarPuntos()" required>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" class="form-control form-control-sm" name="cceq2"
+                                    [(ngModel)]="encuentroOne.cuartos_basquet.cc.equipo2"
+                                    [value]="encuentroOne.cuartos_basquet.cc.equipo2" (change)="sumarPuntos()" required>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="text-center">
+                        <td style="width: 30%;" class="text-center">
+                            <b>Total</b>
+                        </td>
+                        <td>
+                            <b> {{sumapuntosCuartosEq1}} </b>
+                        </td>
+                        <td>
+                            <b> {{sumapuntosCuartosEq2}} </b>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-group text-center">
+            <button class="btn btn-primary w-50" type="button" (click)="guardarResultados()">
+                <i class="fas fa-save"></i> Guardar Resultados
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<br>
+
+<!-- Modal -->
+<div class="modal fade" id="modalAddResul1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="border mb-3 error" *ngIf="msjError != ''">
+                    {{msjError}}
+                </div>
+                <form #formRe1="ngForm" id="formRe1">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Jugadores</label>
+                                <select class="form-select" name="idjugador1" #idjugador1="ngModel"
+                                    [(ngModel)]="resultadoCreate.idjugador" required>
+                                    <option *ngFor="let x of jugadoresEquipo1" value="{{x._id}}">{{x.nombres}}</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Goles</label>
+                                <input type="number" class="form-control" name="goles1" #goles1="ngModel"
+                                    [(ngModel)]="resultadoCreate.goles" required>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label>Tarj. Amarillas</label>
+                                <input type="number" class="form-control" name="taramarilla1" #taramarilla1="ngModel"
+                                    [(ngModel)]="resultadoCreate.amarillas" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Tarj. Rojas</label>
+                                <input type="number" class="form-control" name="rojas1" #rojas1="ngModel"
+                                    [(ngModel)]="resultadoCreate.rojas" required>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label>Faltas</label>
+                                <input type="number" class="form-control" name="faltas1" #faltas1="ngModel"
+                                    [(ngModel)]="resultadoCreate.faltas" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" [disabled]="formRe1.invalid"
+                    (click)="agregarResultadosEquipo1()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2 -->
+<div class="modal fade" id="modalAddResul2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="border mb-3 error" *ngIf="msjError != ''">
+                    {{msjError}}
+                </div>
+                <form #formRe2="ngForm" id="formRe2">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Jugadores</label>
+                                <select class="form-select" name="idjugador2" #idjugador2="ngModel"
+                                    [(ngModel)]="resultadoCreate2.idjugador" required>
+                                    <option *ngFor="let x of jugadoresEquipo2" value="{{x._id}}">{{x.nombres}}</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Goles</label>
+                                <input type="number" class="form-control" name="goles2" #goles2="ngModel"
+                                    [(ngModel)]="resultadoCreate2.goles" required>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label>Tarj. Amarillas</label>
+                                <input type="number" class="form-control" name="taramarilla2" #taramarilla2="ngModel"
+                                    [(ngModel)]="resultadoCreate2.amarillas" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Tarj. Rojas</label>
+                                <input type="number" class="form-control" name="rojas2" #rojas2="ngModel"
+                                    [(ngModel)]="resultadoCreate2.rojas" required>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label>Faltas</label>
+                                <input type="number" class="form-control" name="faltas2" #faltas2="ngModel"
+                                    [(ngModel)]="resultadoCreate2.faltas" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" [disabled]="formRe2.invalid"
+                    (click)="agregarResultadosEquipo2()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

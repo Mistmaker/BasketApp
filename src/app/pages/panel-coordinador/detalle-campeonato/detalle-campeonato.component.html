@@ -1,0 +1,169 @@
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <button class="btn text-white background-base btn-sm" [routerLink]="['/panel/organizar-campeonatos']">
+                <i class="fa fa-arrow-left"></i> Regresar a Organizar Campenoatos
+            </button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="box border rounded">
+                <img src="assets/imagenes/logoperfilll.jpg" class="w-100 rounded border"
+                    *ngIf="campeonatoUp.fotoPerfil == 'vacio'">
+                <img [src]="imagePerfil" class="w-100 rounded border"
+                    *ngIf="campeonatoUp.fotoPerfil != 'vacio' && campeonatoUp.fotoPerfil">
+                <div class="edit-ico" data-bs-toggle="modal" data-bs-target="#editLogoCampeonato">
+                    <i class="far fa-edit"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h5>{{campeonato.nombre}}
+                        <button class="btn text-white background-base btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#editCampeonato">
+                            <i class="fa fa-edit"></i> Editar
+                        </button>
+                        <button class="btn text-white background-base btn-sm" [routerLink]="['/panel/detalle-campeonato/configuracion']">
+                            <i class="fas fa-cogs"></i> Configurar
+                        </button>
+                    </h5>
+                    <p class="mb-2 mt-3"><b>Organizador: </b>{{campeonato.nombre_organizador}}</p>
+                    <p class="mb-2 mt-3"><b>Estado:  </b> <span class="badge bg-danger" style="text-transform: capitalize;">{{campeonato.estado_campeonato}}</span> </p>
+                </div>
+                <div class="col-lg-4 text-end">
+                    <label class="seguidores rounded"><b>0 Seguidores</b></label>
+                    <p class="mb-0 mt-2"><b>Categoría: </b>{{campeonato.categoria}}</p>
+                </div>
+            </div>
+            <div class="opciones border p-2 rounded">
+                <button class="btn text-white background-base mt-1" [routerLink]="['/panel/detalle-campeonato/equipos']">
+                    <i class="fas fa-users"></i> Equipos
+                </button>
+
+                <button class="btn text-white background-base ms-1 mt-1" [routerLink]="['/panel/detalle-campeonato/canchas']">
+                    <i class="fas fa-place-of-worship"></i> Canchas
+                </button>
+
+                <button class="btn text-white background-base ms-1 mt-1" [routerLink]="['/panel/detalle-campeonato/fechas']">
+                    <i class="far fa-calendar-alt"></i> Calendario
+                </button>
+
+                <button class="btn text-white background-base ms-1 mt-1" [routerLink]="['/panel/detalle-campeonato/resultados']">
+                    <i class="far fa-file-alt"></i> Resultados
+                </button>
+
+                <button class="btn text-white background-base ms-1 mt-1" [routerLink]="['/panel/detalle-campeonato/clasificacion']">
+                    <i class="fas fa-table"></i> Clasificación
+                </button>
+
+                <button class="btn text-white background-base ms-1 mt-1" [routerLink]="['/panel/detalle-campeonato/fichas']">
+                    <i class="fas fa-receipt"></i> Noticias
+                </button>
+
+                <!--button class="btn btn-success ms-3" [routerLink]="['/panel/detalle-campeonato/mensajes']">
+                    <i class="far fa-envelope"></i> Mensajes
+                </button-->
+
+                <!--button class="btn btn-success ms-3" [routerLink]="['/panel/detalle-campeonato/configuracion']">
+                    <i class="fas fa-cog"></i> Configuración
+                </button -->
+            </div>
+        </div>
+    </div>
+    <br>
+    <router-outlet></router-outlet>
+</div>
+
+
+<!-- Modal Edit logo -->
+<div class="modal fade" id="editLogoCampeonato" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header background-base text-light">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="far fa-edit"></i> Editar Logo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="con-btn-upload" (click)="UploadFile()">
+                    <label for="file-upload-imagen1" class="subir-image">
+                        <div *ngIf="!img1">
+                            <img src="assets/imagenes/image-icono.png" class="w-100">
+                        </div>
+                        <div *ngIf="img1" class="text-center">
+                            <img [src]="imageSrc1" style="height: auto; width: 75%;">
+                        </div>
+                    </label>
+                    <!--input id="file-upload-imagen1" class="upload" type="file" #imagen1 accept="image/*"
+                        (change)="seleccionarImagen1($event)"-->
+                    <div *ngIf="img1" class="delete-image" (click)="limpiarImagen1()">
+                        <i class="far fa-window-close"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn text-white background-base" (click)="actualizarPortada()">
+                    <i class="far fa-edit"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Info Campeonato -->
+<div class="modal fade" id="editCampeonato" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="far fa-edit"></i> Editar campeonato
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formUpCamp="ngForm">
+                    <label>Nombre del campeonato:</label>
+                    <input type="text" class="form-control" name="nombre" #nombre="ngModel"
+                        [(ngModel)]="campeonatoUp.nombre" required>
+                    <br>
+                    <label>Descripción:</label>
+                    <textarea rows="3" class="form-control" name="descrip" #descrip="ngModel"
+                        [(ngModel)]="campeonatoUp.descripcion"></textarea>
+                    <br>
+                    <div class="row mb-2">
+                        <div class="col-lg-6">
+                            <label>Fecha de inicio:</label>
+                            <input type="date" class="form-control" name="finicio" #finicio="ngModel"
+                                [(ngModel)]="campeonatoUp.fecha_inicio" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Fecha fin:</label>
+                            <input type="date" class="form-control" name="ffin" #ffin="ngModel"
+                                [(ngModel)]="campeonatoUp.fecha_fin" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn text-white background-base" [disabled]="formUpCamp.invalid"
+                    (click)="actualizarCampeonato()">
+                    <i class="far fa-edit"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-spinner></app-spinner>

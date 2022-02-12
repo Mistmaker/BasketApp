@@ -1,0 +1,181 @@
+<div class="card">
+    <div class="card-header text-white background-base">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 pt-2">
+                    <b>{{cantidadEquipos}} Equipos Registrados</b>
+                </div>
+                <div class="col-lg-6">
+                    <input type="text" class="form-control" placeholder="Buscar equipo" [(ngModel)]="filtro">
+                </div>
+                <div class="col-lg-3 text-end pt-1">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalGuardar">
+                        <i class="fas fa-plus"></i> Agregar Equipo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">Logo</th>
+                                <th scope="col">Equipo</th>
+                                <th scope="col">No. Jugadores</th>
+                                <th scope="col">CI. Responsable</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let x of equipos |filter:filtro">
+                                <td>
+                                    <img [src]="x.logoMostrar" class="image-equipo">
+                                </td>
+                                <td>{{x.nombre}}</td>
+                                <td>{{x.nro_jugadores ? x.nro_jugadores : 0}}</td>
+                                <td>{{x.cedula_rep}}</td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-sm"
+                                        (click)="irHaJugadores(x._id, x.nombre)">
+                                        <i class="fas fa-users"></i> Jugadores
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm ms-3" (click)="deleteEquipo(x._id)">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm ms-3" (click)="getOneEquipo(x._id)"
+                                        data-bs-toggle="modal" data-bs-target="#modalupdateEquipo">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal actualizar-->
+<div class="modal fade" id="modalupdateEquipo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="far fa-edit"></i> Modificar equipo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formEquipoUp="ngForm" id="formEquipoUpdate">
+                    <div class="container">
+                        <label>Nombre del equipo:</label>
+                        <input type="text" class="form-control" name="nombreup" #nombreup="ngModel"
+                            [(ngModel)]="equipoOneUp.nombre" required>
+                        <br>
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="con-btn-upload" (click)="UploadFileUpdate()">
+                                    <label for="file-upload-imagen-equipo-update" class="subir-image">
+                                        <div *ngIf="!img2G">
+                                            <img [src]="imagenEdit.imagen" class="w-100">
+                                        </div>
+                                        <div *ngIf="img2G" class="text-center">
+                                            <img [src]="imageSrc2G" style="height: auto; width: 75%;">
+                                        </div>
+                                    </label>
+                                    <!--input id="file-upload-imagen-equipo-update" class="upload" type="file" #imagen2G accept="image/*"
+                                        (change)="seleccionarImagen2G($event)"-->
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <label>Cédula del representante:</label>
+                                <input type="text" class="form-control" name="cedulaup" #cedulaup="ngModel"
+                                    [(ngModel)]="equipoOneUp.cedula_rep" required>
+                                
+                                <label>Nombre del representante:</label>
+                                <input type="text" class="form-control" name="nombre_rep" #nombre_rep="ngModel"
+                                    [(ngModel)]="equipoOneUp.nombre_rep" required>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formEquipoUp.invalid"
+                    (click)="actualizarEquipo()">
+                    <i class="far fa-edit"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal guardar-->
+<div class="modal fade" id="modalGuardar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-white background-base">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="fas fa-plus"></i> Agregar equipo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #formEquipo="ngForm" id="formEquipoCreate">
+                    <div class="container">
+                        <label>Nombre del equipo:</label>
+                        <input type="text" class="form-control" name="nombre" #nombre="ngModel"
+                            [(ngModel)]="equipoCreate.nombre" required>
+                        <br>
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="con-btn-upload" (click)="UploadFileCreate()">
+                                    <label for="file-upload-imagen-create-equipo" class="subir-image">
+                                        <div *ngIf="!img1E">
+                                            <img src="assets/imagenes/image-icono.png" class="w-100">
+                                        </div>
+                                        <div *ngIf="img1E" class="text-center">
+                                            <img [src]="imageSrc1E" style="height: auto; width: 75%;">
+                                        </div>
+                                    </label>
+                                    <!--input id="file-upload-imagen-create-equipo" class="upload" type="file" #imagen1 accept="image/*"
+                                        (change)="seleccionarImagen1E($event)"-->
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <label>Cédula del representante:</label>
+                                <input type="text" class="form-control" name="cedula" #cedula="ngModel"
+                                    [(ngModel)]="equipoCreate.cedula_rep" required>
+                                
+                                <label>Nombre del representante:</label>
+                                <input type="text" class="form-control" name="nombre_rep" #nombre_rep="ngModel"
+                                    [(ngModel)]="equipoCreate.nombre_rep" required>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="far fa-window-close"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="formEquipo.invalid" (click)="agregarEquipo()">
+                    <i class="far fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-spinner></app-spinner>
